@@ -1,0 +1,156 @@
+\section{demo\+Red\+Ball}
+\label{group__src__demoRedBall}\index{demo\+Red\+Ball@{demo\+Red\+Ball}}
+
+
+The manager module for the Red-\/\+Ball Demo developed by I\+IT and I\+SR.  
+
+
+The manager module for the Red-\/\+Ball Demo developed by I\+IT and I\+SR. 
+
+Copyright (C) 2010 Robot\+Cub Consortium Author\+: Ugo Pattacini, Alessandro Roncone
+
+Copy\+Policy\+: Released under the terms of the G\+NU G\+PL v2.\+0.\hypertarget{group__src__demoYoga_intro_sec}{}\subsection{Description}\label{group__src__demoYoga_intro_sec}
+This module collects the 3-\/d object positions estimated by the particle filter and sends data to the head and arm controllers in order to gaze at the target, reach for it and eventually grasp it. It relies on the Y\+A\+RP I\+Cartesian\+Control interface to control both arms and on the Y\+A\+RP I\+Gaze\+Control interface to control the gaze.
+
+Furthermore, there exists a second modality that enables to estimate the 3-\/d object position using stereo vision that needs to be calibrated in advance relying on a feed-\/forward neural network.\hypertarget{group__src__demoYoga_lib_sec}{}\subsection{Libraries}\label{group__src__demoYoga_lib_sec}
+
+\begin{DoxyItemize}
+\item ctrl\+Lib.
+\item i\+Kin.
+\item Y\+A\+RP libraries.
+\end{DoxyItemize}\hypertarget{group__src__demoYoga_parameters_sec}{}\subsection{Parameters}\label{group__src__demoYoga_parameters_sec}
+None.\hypertarget{group__src__demoYoga_portsa_sec}{}\subsection{Ports Accessed}\label{group__src__demoYoga_portsa_sec}
+The robot interface is assumed to be operative; in particular, the I\+Cartesian\+Control interface must be available. The i\+Kin\+Gaze\+Ctrl must be running. \hypertarget{group__src__demoYoga_portsc_sec}{}\subsection{Ports Created}\label{group__src__demoYoga_portsc_sec}
+
+\begin{DoxyItemize}
+\item {\itshape /demo\+Red\+Ball/track\+Target}\+:i receives the 3-\/d position to track.
+\item {\itshape /demo\+Red\+Ball/imd\+Target\+Left}\+:i receives the blobs list as produced by the motion\+C\+UT module for the left eye.
+\item {\itshape /demo\+Red\+Ball/imd\+Target\+Right}\+:i receives the blobs list as produced by the motion\+C\+UT module for the right eye.
+\item {\itshape /demo\+Red\+Ball/cmd\+Face}\+:o sends out commands to the face expression high level interface in order to give an emotional representation of the current robot state.
+\item {\itshape /demo\+Red\+Ball/speech}\+:o sends a set of predefined sentences in order for an eventual T\+TS module to use them during the demo. This feature successfully works with the i\+Speak module. The set of predefined sentences to be spoken is defined via .ini file.
+\item {\itshape /demo\+Red\+Ball/breather/head}\+:rpc interfaces with the head breather (if available) and disables/enables it according when needed
+\item {\itshape /demo\+Red\+Ball/breather/left\+\_\+arm}\+:rpc interfaces with the left arm breather (if available) and disables/enables it according when needed
+\item {\itshape /demo\+Red\+Ball/breather/right\+\_\+arm}\+:rpc interfaces with the right arm breather (if available) and disables/enables it according when needed
+\item {\itshape /demo\+Red\+Ball/blinker}\+:rpc interfaces with the i\+Cub\+Blinker module (if available) and disables/enables it according when needed
+\item {\itshape /demo\+Red\+Ball/look\+Skin}\+:rpc interfaces with the look\+Skin module (if available) and disables/enables it according when needed
+\item {\itshape /demo\+Red\+Ball/gui}\+:o sends out info to update target within the icub\+\_\+gui.
+\item {\itshape /demo\+Red\+Ball/rpc} remote procedure call. Recognized remote commands\+: -\/\textquotesingle{}quit\textquotesingle{} quit the module
+\end{DoxyItemize}\hypertarget{group__icub__pf3dTracker_in_files_sec}{}\subsection{Input Data Files}\label{group__icub__pf3dTracker_in_files_sec}
+None.\hypertarget{group__icub__pf3dTracker_out_data_sec}{}\subsection{Output Data Files}\label{group__icub__pf3dTracker_out_data_sec}
+None. \hypertarget{group__src__demoYoga_conf_file_sec}{}\subsection{Configuration Files}\label{group__src__demoYoga_conf_file_sec}
+The configuration file passed through the option {\itshape --from} should look like as follows\+: 
+\begin{DoxyCode}
+[general]
+\textcolor{comment}{// the robot name to connect to}
+robot           icub
+\textcolor{comment}{// the thread period [ms]}
+thread\_period   30
+\textcolor{comment}{// left arm switch}
+left\_arm        on
+\textcolor{comment}{// right arm switch}
+right\_arm       on
+\textcolor{comment}{// arm trajectory execution time [s]}
+traj\_time       2.0
+\textcolor{comment}{// reaching tolerance [m]}
+reach\_tol       0.01
+\textcolor{comment}{// eye used}
+eye             left
+\textcolor{comment}{// homes limbs if target detection timeout expires [s]}
+idle\_tmo        5.0
+\textcolor{comment}{// enable the use of stereo vision calibrated by NN}
+use\_network off
+\textcolor{comment}{// NN configuration file}
+network         network.ini
+
+[torso]
+\textcolor{comment}{// joint switch (min **) (max **) [deg]; 'min', 'max' optional}
+pitch on  (max 30.0)
+roll off
+yaw on
+
+[left\_arm]
+\textcolor{comment}{// enable/disable the grasp}
+grasp\_enable        on
+\textcolor{comment}{// the offset [m] to be added to the desired position}
+reach\_offset        0.0 -0.15 -0.05
+\textcolor{comment}{// the offset [m] for grasping}
+grasp\_offset        0.0 0.0 -0.05
+\textcolor{comment}{// perturbation given as standard deviation [m]}
+grasp\_sigma 0.01 0.01 0.01
+\textcolor{comment}{// hand orientation to be kept [axis-angle rep.]}
+hand\_orientation 0.064485 0.707066 0.704201 3.140572
+\textcolor{comment}{// enable impedance velocity mode}
+impedance\_velocity\_mode off
+impedance\_stiffness 0.5 0.5 0.5 0.2 0.1
+impedance\_damping 60.0 60.0 60.0 20.0 0.0
+
+[right\_arm]
+grasp\_enable        on
+reach\_offset        0.0 0.15 -0.05
+grasp\_offset        0.0 0.0 -0.05
+grasp\_sigma         0.01 0.01 0.01
+hand\_orientation    -0.012968 -0.721210 0.692595 2.917075
+impedance\_velocity\_mode off
+impedance\_stiffness 0.5 0.5 0.5 0.2 0.1
+impedance\_damping 60.0 60.0 60.0 20.0 0.0
+[home\_arm]
+\textcolor{comment}{// home position [deg]}
+poss    -30.0 30.0 0.0  45.0 0.0  0.0  0.0
+\textcolor{comment}{// velocities to reach home positions [deg/s]}
+vels    10.0  10.0 10.0 10.0 10.0 10.0 10.0
+
+[arm\_selection]
+\textcolor{comment}{// hysteresis range added around plane y=0 [m]}
+hysteresis\_thres 0.1
+
+[grasp]
+\textcolor{comment}{// ball radius [m] for still target detection}
+sphere\_radius   0.05
+\textcolor{comment}{// timeout [s] for still target detection}
+sphere\_tmo      3.0
+\textcolor{comment}{// timeout [s] to open hand after closure}
+release\_tmo     3.0
+\textcolor{comment}{// open hand positions [deg]}
+open\_hand       0.0 0.0 0.0   0.0   0.0 0.0 0.0   0.0   0.0
+\textcolor{comment}{// close hand positions [deg]}
+close\_hand      0.0 80.0 12.0 18.0 27.0 50.0 20.0  50.0 135.0
+\textcolor{comment}{// velocities to reach hand positions [deg/s]}
+vels\_hand       10.0 10.0  10.0 10.0 10.0 10.0 10.0 10.0  10.0
+
+[include speech "speech\_English.ini"]
+\end{DoxyCode}
+
+
+The latter inclusion is the .ini file needed for the predefined set of sentences to be spoken. The speech during the red ball demo is divided into three states\+:
+\begin{DoxyItemize}
+\item \mbox{[}speech\+\_\+reach\mbox{]} -\/$>$ it is used when the robot \char`\"{}sees\char`\"{} the ball, and is trying to reach it
+\item \mbox{[}speech\+\_\+grasp\mbox{]} -\/$>$ is performed after the grasping action (regardless of its success/failure)
+\item \mbox{[}speech\+\_\+idle\mbox{]} -\/$>$ is used after the red ball is pulled away from the robot\textquotesingle{}s sight For each of these states, there is a group in the .ini file. Each line is a sentence that will be spoken by the robot according to its state. Add as many sentences (i.\+e. lines) as you\textquotesingle{}d like to these groups\+: they will be chosen randomly by the manager at runtime. The speech file should look as follows\+: 
+\begin{DoxyCode}
+[speech\_reach]
+\textcolor{stringliteral}{"Oh.! There it is!!"}
+\textcolor{stringliteral}{"Stay still, otherwise I can't catch it!"}
+\textcolor{stringliteral}{"Give me the red ball!"}
+\textcolor{stringliteral}{"Red ball is my precious... Give it to me!"}
+\textcolor{stringliteral}{"Wait!! I want that ball!"}
+
+[speech\_grasp]
+\textcolor{stringliteral}{"Thank you dear"}
+\textcolor{stringliteral}{"Did I take it?"}
+\textcolor{stringliteral}{"I like playing with the red ball!"}
+\textcolor{stringliteral}{"Yippi ka yeah!"}
+
+[speech\_idle]
+\textcolor{stringliteral}{"Oh no! I want to play with the red ball again!"}
+\textcolor{stringliteral}{"I want the red ball to be my wife"}
+\textcolor{stringliteral}{"Playing with the red ball makes me happy, let's do it again."}
+\textcolor{stringliteral}{"I don't feel tired, let's play again."}
+\textcolor{stringliteral}{"Oh my Gosh!! Where's the red ball??"}
+\end{DoxyCode}
+
+\end{DoxyItemize}\hypertarget{group__src__demoYoga_tested_os_sec}{}\subsection{Tested OS}\label{group__src__demoYoga_tested_os_sec}
+Windows, Linux
+
+\begin{DoxyAuthor}{Author}
+Ugo Pattacini, Alessandro Roncone 
+\end{DoxyAuthor}

@@ -1,0 +1,380 @@
+\section{C\+:/dev/icub-\/basic-\/demos/pf3d\+Bottomup/src/\+I\+I\+R\+Gaus\+Deriv.cpp File Reference}
+\label{IIRGausDeriv_8cpp}\index{C\+:/dev/icub-\/basic-\/demos/pf3d\+Bottomup/src/\+I\+I\+R\+Gaus\+Deriv.\+cpp@{C\+:/dev/icub-\/basic-\/demos/pf3d\+Bottomup/src/\+I\+I\+R\+Gaus\+Deriv.\+cpp}}
+
+
+Coefficients and poles of I\+IR Gaussian Derivative Filters (order 0, 1 and 2).  
+
+
+{\ttfamily \#include $<$complex$>$}\\*
+{\ttfamily \#include $<$i\+Cub/\+I\+I\+R\+Filt.\+h$>$}\\*
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{IIRGausDeriv_8cpp_a2741eb625282f8d68ba971a4431407a5}{calc\+\_\+poles} (int taps, const double scale, const complex$<$ double $>$ oldpoles\mbox{[}$\,$\mbox{]}, complex$<$ double $>$ newpoles\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em 5 tap second derivative filter with Linf norm approximation \end{DoxyCompactList}\item 
+void \hyperlink{IIRGausDeriv_8cpp_a3e7f009d38086e228c6ba8b3e5b6055f}{calc\+\_\+coeffs} (int taps, const complex$<$ double $>$ poles\mbox{[}$\,$\mbox{]}, float $\ast$coeffs)
+\begin{DoxyCompactList}\small\item\em Compute the coefficients of the filter, given its poles. \end{DoxyCompactList}\item 
+void \hyperlink{IIRGausDeriv_8cpp_a3e168333285d90a0bfd848d9791ca427}{calc\+\_\+coeffs} (int taps, const complex$<$ double $>$ poles\mbox{[}$\,$\mbox{]}, const double s, float $\ast$coeffs)
+\begin{DoxyCompactList}\small\item\em Compute the coefficients of the filter for scale s, given the poles at scale 2. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const complex$<$ double $>$ {\bfseries d0\+\_\+\+N3\+\_\+\+Linf} \mbox{[}$\,$\mbox{]}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Coefficients and poles of I\+IR Gaussian Derivative Filters (order 0, 1 and 2). 
+
+\begin{DoxySeeAlso}{See also}
+\char`\"{}\+Recursive Gaussian Derivative Filters\char`\"{}, L.\+van.\+Vliet,I.\+T.\+Young and P.\+W.\+Verbeek, 1998 
+\end{DoxySeeAlso}
+\begin{DoxyAuthor}{Author}
+Alex Bernardino, I\+S\+R-\/\+I\+ST 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2006-\/2007 
+\end{DoxyDate}
+\begin{DoxyNote}{Note}
+Released under G\+NU G\+PL v2.\+0 
+\end{DoxyNote}
+
+
+\subsection{Function Documentation}
+\index{I\+I\+R\+Gaus\+Deriv.\+cpp@{I\+I\+R\+Gaus\+Deriv.\+cpp}!calc\+\_\+coeffs@{calc\+\_\+coeffs}}
+\index{calc\+\_\+coeffs@{calc\+\_\+coeffs}!I\+I\+R\+Gaus\+Deriv.\+cpp@{I\+I\+R\+Gaus\+Deriv.\+cpp}}
+\subsubsection[{\texorpdfstring{calc\+\_\+coeffs(int taps, const complex$<$ double $>$ poles[], float $\ast$coeffs)}{calc_coeffs(int taps, const complex< double > poles[], float *coeffs)}}]{\setlength{\rightskip}{0pt plus 5cm}void calc\+\_\+coeffs (
+\begin{DoxyParamCaption}
+\item[{int}]{taps, }
+\item[{const complex$<$ double $>$}]{poles\mbox{[}$\,$\mbox{]}, }
+\item[{float $\ast$}]{coeffs}
+\end{DoxyParamCaption}
+)}\label{IIRGausDeriv_8cpp_a3e7f009d38086e228c6ba8b3e5b6055f}
+
+
+Compute the coefficients of the filter, given its poles. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em taps} & Number of taps (3, 4, or 5) \\
+\hline
+{\em poles} & Poles of the filter. \\
+\hline
+{\em coeffs} & Computed coefficients $(b_0, a_1, a_2, a_3)$\+:
+\begin{DoxyItemize}
+\item $ b_0 $ is the gain
+\item $ (a_1, a_2, a_3)$ are the autoregressive coefficients
+\end{DoxyItemize}\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 192 of file I\+I\+R\+Gaus\+Deriv.\+cpp.
+
+
+\begin{DoxyCode}
+193 \{
+194     \textcolor{keywordflow}{if}((taps < 3)||(taps>5))
+195         \textcolor{keywordflow}{throw} \textcolor{stringliteral}{"Invalid number of taps in calc\_coeffs"};
+196     
+197     \textcolor{keywordflow}{if}(coeffs == NULL)
+198         \textcolor{keywordflow}{throw} \textcolor{stringliteral}{"NULL Pointer argument in calc\_coeffs"};
+199 
+200     complex <double> d1\_s, d2\_s, d3\_s, d4\_s, d5\_s;
+201     d1\_s = poles[0];
+202     d2\_s = poles[1];
+203     d3\_s = poles[2];
+204     \textcolor{keywordflow}{if}(taps > 3)
+205         d4\_s = poles[3];
+206     \textcolor{keywordflow}{else}
+207         d4\_s = 0;
+208     \textcolor{keywordflow}{if}(taps > 4)
+209         d5\_s = poles[4];
+210     \textcolor{keywordflow}{else}
+211         d5\_s = 0;
+212     
+213     \textcolor{comment}{//computing the filter coeffs}
+214     \textcolor{keywordflow}{if}( taps == 3 )
+215     \{
+216         complex<double> b = complex<double>(1.0,0.0)/d1\_s/d2\_s/d3\_s;
+217         coeffs[1] = (float)real(-b*(d2\_s*d1\_s + d3\_s*d1\_s + d3\_s*d2\_s));
+218         coeffs[2] = (float)real(b*(d1\_s + d2\_s + d3\_s));
+219         coeffs[3] = (float)real(-b);
+220         coeffs[4] = 0.0f;
+221         coeffs[5] = 0.0f;
+222         coeffs[0] = 1.0f + coeffs[1] + coeffs[2] + coeffs[3];
+223     \}
+224     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}(taps == 4)
+225     \{
+226         complex<double> b = complex<double>(1.0,0.0)/d1\_s/d2\_s/d3\_s/d4\_s;
+227         coeffs[1] = (float)real(-b*(d3\_s*d2\_s*d1\_s + d4\_s*d2\_s*d1\_s + d4\_s*d3\_s*d1\_s + d4\_s*d3\_s*d2\_s));
+228         coeffs[2] = (float)real(b*(d2\_s*d1\_s + d3\_s*d1\_s + d3\_s*d2\_s + d4\_s*d1\_s + d4\_s*d2\_s + d4\_s*d3\_s));
+229         coeffs[3] = (float)real(-b*(d1\_s + d2\_s + d3\_s + d4\_s));
+230         coeffs[4] = (float)real(b);
+231         coeffs[5] = 0.0f;
+232         coeffs[0] = 1.0f + coeffs[1] + coeffs[2] + coeffs[3] + coeffs[4];
+233     \}
+234     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}(taps == 5)
+235     \{
+236         complex <double> b = complex<double>(1.0,0.0)/d1\_s/d2\_s/d3\_s/d4\_s/d5\_s;
+237         coeffs[1] = (float)real(-b*(d4\_s*d3\_s*d2\_s*d1\_s + d5\_s*d3\_s*d2\_s*d1\_s + d5\_s*d4\_s*d2\_s*d1\_s + d5\_s*
+      d4\_s*d3\_s*d1\_s + d5\_s*d4\_s*d3\_s*d2\_s));
+238         coeffs[2] = (float)real(b*(d3\_s*d2\_s*d1\_s + d4\_s*d2\_s*d1\_s + d4\_s*d3\_s*d1\_s + d4\_s*d3\_s*d2\_s + d5\_s
+      *d2\_s*d1\_s + d5\_s*d3\_s*d1\_s + d5\_s*d3\_s*d2\_s + d5\_s*d4\_s*d1\_s + d5\_s*d4\_s*d2\_s + d5\_s*d4\_s*d3\_s));
+239         coeffs[3] = (float)real(-b*(d2\_s*d1\_s + d3\_s*d1\_s + d3\_s*d2\_s + d4\_s*d1\_s + d4\_s*d2\_s + d4\_s*d3\_s +
+       d5\_s*d1\_s + d5\_s*d2\_s + d5\_s*d3\_s + d5\_s*d4\_s));
+240         coeffs[4] = (float)real(b*(d1\_s + d2\_s + d3\_s + d4\_s + d5\_s));
+241         coeffs[5] = (float)real(-b);
+242         coeffs[0] = 1.0f + coeffs[1] + coeffs[2] + coeffs[3] + coeffs[4] + coeffs[5];    
+243     \}
+244 \}
+\end{DoxyCode}
+\index{I\+I\+R\+Gaus\+Deriv.\+cpp@{I\+I\+R\+Gaus\+Deriv.\+cpp}!calc\+\_\+coeffs@{calc\+\_\+coeffs}}
+\index{calc\+\_\+coeffs@{calc\+\_\+coeffs}!I\+I\+R\+Gaus\+Deriv.\+cpp@{I\+I\+R\+Gaus\+Deriv.\+cpp}}
+\subsubsection[{\texorpdfstring{calc\+\_\+coeffs(int taps, const complex$<$ double $>$ poles[], const double s, float $\ast$coeffs)}{calc_coeffs(int taps, const complex< double > poles[], const double s, float *coeffs)}}]{\setlength{\rightskip}{0pt plus 5cm}void calc\+\_\+coeffs (
+\begin{DoxyParamCaption}
+\item[{int}]{taps, }
+\item[{const complex$<$ double $>$}]{poles\mbox{[}$\,$\mbox{]}, }
+\item[{const double}]{s, }
+\item[{float $\ast$}]{coeffs}
+\end{DoxyParamCaption}
+)}\label{IIRGausDeriv_8cpp_a3e168333285d90a0bfd848d9791ca427}
+
+
+Compute the coefficients of the filter for scale s, given the poles at scale 2. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em taps} & Number of taps (3, 4, or 5) \\
+\hline
+{\em poles} & Poles of the scale 2 filter. \\
+\hline
+{\em scale} & Required filter scale (values between 1 and 100 are OK). \\
+\hline
+{\em coeffs} & Computed coefficients $(b_0, a_1, a_2, a_3)$\+:
+\begin{DoxyItemize}
+\item $ b_0 $ is the gain
+\item $ (a_1, a_2, a_3)$ are the autoregressive coefficients
+\end{DoxyItemize}\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 251 of file I\+I\+R\+Gaus\+Deriv.\+cpp.
+
+
+\begin{DoxyCode}
+252 \{
+253 
+254     \textcolor{keywordflow}{if}((taps < 3)||(taps>5))
+255         \textcolor{keywordflow}{throw} \textcolor{stringliteral}{"Invalid number of taps in calc\_coeffs"};
+256     
+257     \textcolor{keywordflow}{if}(coeffs == NULL)
+258         \textcolor{keywordflow}{throw} \textcolor{stringliteral}{"NULL Pointer argument in calc\_coeffs"};
+259 
+260     complex <double> d1\_2, d2\_2, d3\_2, d4\_2, d5\_2;
+261     d1\_2 = poles[0];
+262     d2\_2 = poles[1];
+263     d3\_2 = poles[2];
+264     \textcolor{keywordflow}{if}(taps > 3)
+265         d4\_2 = poles[3];
+266     \textcolor{keywordflow}{else}
+267         d4\_2 = 0;
+268     \textcolor{keywordflow}{if}(taps > 4)
+269         d5\_2 = poles[4];
+270     \textcolor{keywordflow}{else}
+271         d5\_2 = 0;
+272     
+273     \textcolor{keywordtype}{double} q, std, lambda;
+274     \textcolor{keywordtype}{double} tol = 0.01;
+275     complex <double> j(0,1), var;
+276     complex <double> d1\_s, d2\_s, d3\_s, d4\_s, d5\_s;
+277     \textcolor{comment}{// computing new values for the poles}
+278     q = s/2;
+279     d1\_s = exp(log(abs(d1\_2))/q)*exp(j*arg(d1\_2)/q);
+280     d2\_s = exp(log(abs(d2\_2))/q)*exp(j*arg(d2\_2)/q);
+281     d3\_s = exp(log(abs(d3\_2))/q)*exp(j*arg(d3\_2)/q);
+282     \textcolor{keywordflow}{if}( abs(d4\_2) != 0 )
+283         d4\_s = exp(log(abs(d4\_2))/q)*exp(j*arg(d4\_2)/q);
+284     \textcolor{keywordflow}{else}
+285         d4\_s = 0;
+286     \textcolor{keywordflow}{if}( abs(d5\_2) != 0 )
+287         d5\_s = exp(log(abs(d5\_2))/q)*exp(j*arg(d5\_2)/q);
+288     \textcolor{keywordflow}{else}
+289         d5\_s = 0;
+290     \textcolor{comment}{// computing the variance of the new filter}
+291     var =  d1\_s*2.0/(d1\_s-1.0)/(d1\_s-1.0) + d2\_s*2.0/(d2\_s-1.0)/(d2\_s-1.0) + d3\_s*2.0/(d3\_s-1.0)/(d3\_s-1.0)
+      +d4\_s*2.0/(d4\_s-1.0)/(d4\_s-1.0)+d5\_s*2.0/(d5\_s-1.0)/(d5\_s-1.0);
+292     std = sqrt(var.real());
+293     \textcolor{keywordflow}{while}( fabs(s-std) > tol )
+294     \{
+295         lambda = s/std;
+296         q = q*lambda;
+297         \textcolor{comment}{// computing new values for the poles}
+298         d1\_s = exp(log(abs(d1\_2))/q)*exp(j*arg(d1\_2)/q);
+299         d2\_s = exp(log(abs(d2\_2))/q)*exp(j*arg(d2\_2)/q);
+300         d3\_s = exp(log(abs(d3\_2))/q)*exp(j*arg(d3\_2)/q);
+301         \textcolor{keywordflow}{if}( abs(d4\_2) != 0)
+302             d4\_s = exp(log(abs(d4\_2))/q)*exp(j*arg(d4\_2)/q);
+303         \textcolor{keywordflow}{else}
+304             d4\_s = 0;
+305         \textcolor{keywordflow}{if}( abs(d5\_2) != 0)
+306             d5\_s = exp(log(abs(d5\_2))/q)*exp(j*arg(d5\_2)/q);
+307         \textcolor{keywordflow}{else}
+308             d5\_s = 0;
+309         \textcolor{comment}{// computing the variance of the new filter}
+310         var =  d1\_s*2.0/(d1\_s-1.0)/(d1\_s-1.0) + d2\_s*2.0/(d2\_s-1.0)/(d2\_s-1.0) + d3\_s*2.0/(d3\_s-1.0)/(d3\_s-
+      1.0)+d4\_s*2.0/(d4\_s-1.0)/(d4\_s-1.0)+d5\_s*2.0/(d5\_s-1.0)/(d5\_s-1.0);
+311         std = sqrt(var.real());
+312     \}
+313 
+314     \textcolor{comment}{//computing the filter coeffs}
+315     \textcolor{keywordflow}{if}( taps == 3 )
+316     \{
+317         complex<double> b = complex<double>(1.0,0.0)/d1\_s/d2\_s/d3\_s;
+318         coeffs[1] = (float)real(-b*(d2\_s*d1\_s + d3\_s*d1\_s + d3\_s*d2\_s));
+319         coeffs[2] = (float)real(b*(d1\_s + d2\_s + d3\_s));
+320         coeffs[3] = (float)real(-b);
+321         coeffs[4] = 0.0f;
+322         coeffs[5] = 0.0f;
+323         coeffs[0] = 1.0f + coeffs[1] + coeffs[2] + coeffs[3];
+324     \}
+325     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}(taps == 4)
+326     \{
+327         complex<double> b = complex<double>(1.0,0.0)/d1\_s/d2\_s/d3\_s/d4\_s;
+328         coeffs[1] = (float)real(-b*(d3\_s*d2\_s*d1\_s + d4\_s*d2\_s*d1\_s + d4\_s*d3\_s*d1\_s + d4\_s*d3\_s*d2\_s));
+329         coeffs[2] = (float)real(b*(d2\_s*d1\_s + d3\_s*d1\_s + d3\_s*d2\_s + d4\_s*d1\_s + d4\_s*d2\_s + d4\_s*d3\_s));
+330         coeffs[3] = (float)real(-b*(d1\_s + d2\_s + d3\_s + d4\_s));
+331         coeffs[4] = (float)real(b);
+332         coeffs[5] = 0.0f;
+333         coeffs[0] = 1.0f + coeffs[1] + coeffs[2] + coeffs[3] + coeffs[4];
+334     \}
+335     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if}(taps == 5)
+336     \{
+337         complex <double> b = complex<double>(1.0,0.0)/d1\_s/d2\_s/d3\_s/d4\_s/d5\_s;
+338         coeffs[1] = (float)real(-b*(d4\_s*d3\_s*d2\_s*d1\_s + d5\_s*d3\_s*d2\_s*d1\_s + d5\_s*d4\_s*d2\_s*d1\_s + d5\_s*
+      d4\_s*d3\_s*d1\_s + d5\_s*d4\_s*d3\_s*d2\_s));
+339         coeffs[2] = (float)real(b*(d3\_s*d2\_s*d1\_s + d4\_s*d2\_s*d1\_s + d4\_s*d3\_s*d1\_s + d4\_s*d3\_s*d2\_s + d5\_s
+      *d2\_s*d1\_s + d5\_s*d3\_s*d1\_s + d5\_s*d3\_s*d2\_s + d5\_s*d4\_s*d1\_s + d5\_s*d4\_s*d2\_s + d5\_s*d4\_s*d3\_s));
+340         coeffs[3] = (float)real(-b*(d2\_s*d1\_s + d3\_s*d1\_s + d3\_s*d2\_s + d4\_s*d1\_s + d4\_s*d2\_s + d4\_s*d3\_s +
+       d5\_s*d1\_s + d5\_s*d2\_s + d5\_s*d3\_s + d5\_s*d4\_s));
+341         coeffs[4] = (float)real(b*(d1\_s + d2\_s + d3\_s + d4\_s + d5\_s));
+342         coeffs[5] = (float)real(-b);
+343         coeffs[0] = 1.0f + coeffs[1] + coeffs[2] + coeffs[3] + coeffs[4] + coeffs[5];    
+344     \}
+345 \}
+\end{DoxyCode}
+\index{I\+I\+R\+Gaus\+Deriv.\+cpp@{I\+I\+R\+Gaus\+Deriv.\+cpp}!calc\+\_\+poles@{calc\+\_\+poles}}
+\index{calc\+\_\+poles@{calc\+\_\+poles}!I\+I\+R\+Gaus\+Deriv.\+cpp@{I\+I\+R\+Gaus\+Deriv.\+cpp}}
+\subsubsection[{\texorpdfstring{calc\+\_\+poles(int taps, const double scale, const complex$<$ double $>$ oldpoles[], complex$<$ double $>$ newpoles[])}{calc_poles(int taps, const double scale, const complex< double > oldpoles[], complex< double > newpoles[])}}]{\setlength{\rightskip}{0pt plus 5cm}void calc\+\_\+poles (
+\begin{DoxyParamCaption}
+\item[{int}]{taps, }
+\item[{const double}]{scale, }
+\item[{const complex$<$ double $>$}]{oldpoles\mbox{[}$\,$\mbox{]}, }
+\item[{complex$<$ double $>$}]{newpoles\mbox{[}$\,$\mbox{]}}
+\end{DoxyParamCaption}
+)}\label{IIRGausDeriv_8cpp_a2741eb625282f8d68ba971a4431407a5}
+
+
+5 tap second derivative filter with Linf norm approximation 
+
+Compute the poles of the filter for scale s, given the poles at scale 2 
+\begin{DoxyParams}{Parameters}
+{\em taps} & Number of taps (3, 4, or 5) \\
+\hline
+{\em scale} & Required filter scale (values between 1 and 100 are OK). \\
+\hline
+{\em oldpoles} & Poles of the scale 2 filter. \\
+\hline
+{\em newpoles} & Poles of the computed filter \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 121 of file I\+I\+R\+Gaus\+Deriv.\+cpp.
+
+
+\begin{DoxyCode}
+122 \{
+123     \textcolor{keywordflow}{if}((taps < 3)||(taps>5))
+124         \textcolor{keywordflow}{throw} \textcolor{stringliteral}{"Invalid number of taps in calc\_poles"};
+125     
+126     \textcolor{keywordflow}{if}(newpoles == NULL)
+127         \textcolor{keywordflow}{throw} \textcolor{stringliteral}{"NULL Pointer argument in calc\_poles"};
+128 
+129     complex <double> d1\_2, d2\_2, d3\_2, d4\_2, d5\_2;
+130     d1\_2 = oldpoles[0];
+131     d2\_2 = oldpoles[1];
+132     d3\_2 = oldpoles[2];
+133     \textcolor{keywordflow}{if}(taps > 3)
+134         d4\_2 = oldpoles[3];
+135     \textcolor{keywordflow}{else}
+136         d4\_2 = 0;
+137     \textcolor{keywordflow}{if}(taps > 4)
+138         d5\_2 = oldpoles[4];
+139     \textcolor{keywordflow}{else}
+140         d5\_2 = 0;
+141     
+142     \textcolor{keywordtype}{double} q, std, lambda;
+143     \textcolor{keywordtype}{double} tol = 0.01;
+144     complex <double> j(0,1), var;
+145     complex <double> d1\_s, d2\_s, d3\_s, d4\_s, d5\_s;
+146     \textcolor{comment}{// computing new values for the poles}
+147     q = scale/2;
+148     d1\_s = exp(log(abs(d1\_2))/q)*exp(j*arg(d1\_2)/q);
+149     d2\_s = exp(log(abs(d2\_2))/q)*exp(j*arg(d2\_2)/q);
+150     d3\_s = exp(log(abs(d3\_2))/q)*exp(j*arg(d3\_2)/q);
+151     \textcolor{keywordflow}{if}( abs(d4\_2) != 0 )
+152         d4\_s = exp(log(abs(d4\_2))/q)*exp(j*arg(d4\_2)/q);
+153     \textcolor{keywordflow}{else}
+154         d4\_s = 0;
+155     \textcolor{keywordflow}{if}( abs(d5\_2) != 0 )
+156         d5\_s = exp(log(abs(d5\_2))/q)*exp(j*arg(d5\_2)/q);
+157     \textcolor{keywordflow}{else}
+158         d5\_s = 0;
+159     \textcolor{comment}{// computing the variance of the new filter}
+160     var =  d1\_s*2.0/(d1\_s-1.0)/(d1\_s-1.0) + d2\_s*2.0/(d2\_s-1.0)/(d2\_s-1.0) + d3\_s*2.0/(d3\_s-1.0)/(d3\_s-1.0)
+      +d4\_s*2.0/(d4\_s-1.0)/(d4\_s-1.0)+d5\_s*2.0/(d5\_s-1.0)/(d5\_s-1.0);
+161     std = sqrt(var.real());
+162     \textcolor{keywordflow}{while}( fabs(scale-std) > tol )
+163     \{
+164         lambda = scale/std;
+165         q = q*lambda;
+166         \textcolor{comment}{// computing new values for the poles}
+167         d1\_s = exp(log(abs(d1\_2))/q)*exp(j*arg(d1\_2)/q);
+168         d2\_s = exp(log(abs(d2\_2))/q)*exp(j*arg(d2\_2)/q);
+169         d3\_s = exp(log(abs(d3\_2))/q)*exp(j*arg(d3\_2)/q);
+170         \textcolor{keywordflow}{if}( abs(d4\_2) != 0)
+171             d4\_s = exp(log(abs(d4\_2))/q)*exp(j*arg(d4\_2)/q);
+172         \textcolor{keywordflow}{else}
+173             d4\_s = 0;
+174         \textcolor{keywordflow}{if}( abs(d5\_2) != 0)
+175             d5\_s = exp(log(abs(d5\_2))/q)*exp(j*arg(d5\_2)/q);
+176         \textcolor{keywordflow}{else}
+177             d5\_s = 0;
+178         \textcolor{comment}{// computing the variance of the new filter}
+179         var =  d1\_s*2.0/(d1\_s-1.0)/(d1\_s-1.0) + d2\_s*2.0/(d2\_s-1.0)/(d2\_s-1.0) + d3\_s*2.0/(d3\_s-1.0)/(d3\_s-
+      1.0)+d4\_s*2.0/(d4\_s-1.0)/(d4\_s-1.0)+d5\_s*2.0/(d5\_s-1.0)/(d5\_s-1.0);
+180         std = sqrt(var.real());
+181     \}
+182     newpoles[0] = d1\_s;
+183     newpoles[1] = d2\_s;
+184     newpoles[2] = d3\_s;
+185     newpoles[3] = d4\_s;
+186     newpoles[4] = d5\_s;
+187 \}
+\end{DoxyCode}
+
+
+\subsection{Variable Documentation}
+\index{I\+I\+R\+Gaus\+Deriv.\+cpp@{I\+I\+R\+Gaus\+Deriv.\+cpp}!d0\+\_\+\+N3\+\_\+\+Linf@{d0\+\_\+\+N3\+\_\+\+Linf}}
+\index{d0\+\_\+\+N3\+\_\+\+Linf@{d0\+\_\+\+N3\+\_\+\+Linf}!I\+I\+R\+Gaus\+Deriv.\+cpp@{I\+I\+R\+Gaus\+Deriv.\+cpp}}
+\subsubsection[{\texorpdfstring{d0\+\_\+\+N3\+\_\+\+Linf}{d0_N3_Linf}}]{\setlength{\rightskip}{0pt plus 5cm}const complex$<$double$>$ d0\+\_\+\+N3\+\_\+\+Linf\mbox{[}$\,$\mbox{]}}\label{IIRGausDeriv_8cpp_a8c8a923a255f7d1433ccbb5ca69e6848}
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+= \{
+    complex<double>(1.40098,1.00236),
+    complex<double>(1.40098,-1.00236),
+    complex<double>(1.85132,0),
+\}
+\end{DoxyCode}
